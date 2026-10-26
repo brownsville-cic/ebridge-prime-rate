@@ -1,0 +1,35 @@
+name: Update prime rate
+
+on:
+  schedule:
+    - cron: "0 14 * * 1-5"   # weekdays, 9am Central (8am in winter)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-prime
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch prime rate from FRED
+        run: python3 update_prime.py
+
+      - name: Commit if prime.json changed
+        run: |
+          if git diff --quiet -- prime.json && git ls-files --error-unmatch prime.json >/dev/null 2>&1; then
+            echo "No change to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898099+github-actions[bot]@users.noreply.github.com"
+          git add prime.json
+          git commit -F "$RUNNER_TEMP/commit-msg"
+          git push
