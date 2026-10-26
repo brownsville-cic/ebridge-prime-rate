@@ -1,0 +1,8 @@
+{
+  "primeRate": 7.0,
+  "effective": "2026-09-17",
+  "observed": "2026-10-21",
+  "checked": "2026-10-26",
+  "source": "Federal Reserve H.15 bank prime loan rate (FRED series DPRIME)",
+  "sourceUrl": "https://fred.stlouisfed.org/series/DPRIME"
+}
